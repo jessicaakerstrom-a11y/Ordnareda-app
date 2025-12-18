@@ -23,7 +23,7 @@ def get_items(box_id):
 # CSS med Lora-typsnitt och snyggt mörkt tema
 css = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap');
 
 html, body, [class*="css"] {
     font-family: 'Lora', serif !important;
@@ -77,12 +77,7 @@ st.markdown(css, unsafe_allow_html=True)
 st.markdown("<h1 style='text-align: center;'>📦 Ordna Reda</h1>", unsafe_allow_html=True)
 st.markdown("---")
 
-# Sidebar med länkar
-st.sidebar.markdown("### 📲 Följ mig")
-instagram_url = st.sidebar.text_input("Instagram-länk", value="https://www.instagram.com/dittnamn/", key="ig")
-website_url = st.sidebar.text_input("Hemsida-länk", value="https://dinhemsida.se", key="web")
-st.sidebar.markdown(f"[📷 Instagram]({instagram_url})", unsafe_allow_html=True)
-st.sidebar.markdown(f"[🌐 Hemsida]({website_url})", unsafe_allow_html=True)
+# Sidebar – bara meny, inga länkar
 st.sidebar.markdown("---")
 
 # QR-direktvisning med utskriftssida
