@@ -48,7 +48,7 @@ html, body, [class*="css"] {
 }
 
 css = """
-<style>
+<style> {
 @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
 html, body, [class*="css"] {
@@ -319,6 +319,7 @@ else:
                 st.info("Inget hittades.")
 
 conn.close()
+
 
 
 
