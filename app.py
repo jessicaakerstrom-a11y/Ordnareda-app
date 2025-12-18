@@ -47,7 +47,41 @@ html, body, [class*="css"] {
     color: #E0E0E0;
 }
 
+css = """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+html, body, [class*="css"] {
+    font-family: 'Lora', serif !important;
+    color: #E0E0E0;
+}
+
 .stApp {
+    background-color: #000000;
+}
+
+.main > div {
+    background-color: rgba(0, 0, 0, 0.64);
+    border-radius: 18px;
+    padding: 30px;
+    margin: 20px;
+}
+
+h1, h2, h3, h4 {
+    color: #FFFFFF;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+}
+
+.stButton > button {
+    background-color: #4B0082;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+}
+</style>
+"""
+{
     background-color: #000000;
 }
 
@@ -285,6 +319,7 @@ else:
                 st.info("Inget hittades.")
 
 conn.close()
+
 
 
 
