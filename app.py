@@ -5,7 +5,7 @@ from PIL import Image
 import os
 import io
 
-# Databas (delad för alla på Streamlit Cloud)
+# Databas
 conn = sqlite3.connect('ordna_reda.db', check_same_thread=False)
 c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS boxes (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)''')
@@ -20,13 +20,13 @@ def get_items(box_id):
     c.execute("SELECT * FROM items WHERE box_id=?", (box_id,))
     return c.fetchall()
 
-# CSS med Lora-font och tema
+# CSS med Lora, tema och bakgrund
 css = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
 html, body, [class*="css"] {
-    font-family: 'Lora', serif;
+    font-family: 'Lora', serif !important;
     color: #E0E0E0;
 }
 .stApp {
@@ -64,26 +64,21 @@ h1, h2, h3, h4 {
 .stSidebar {
     background-color: rgba(10, 10, 10, 0.9);
 }
-@media print {
-    .no-print { display: none; }
-    body { background: white; color: black; }
-    h1, h2 { color: black; text-shadow: none; }
-}
 </style>
 """
 st.markdown(css, unsafe_allow_html=True)
 
-# Bakgrundsbild (inbakad från repo)
-if os.path.exists("background.png"):
-    st.image("background.png", use_column_width=True)
-elif os.path.exists("background.jpg"):
-    st.image("background.jpg", use_column_width=True)
+# Bakgrundsbild från repo
+background_files = ["background.png", "background.jpg", "background.jpeg"]
+background_path = next((f for f in background_files if os.path.exists(f)), None)
+if background_path:
+    st.image(background_path, use_column_width=True)
 
-# Logga (inbakad från repo)
-if os.path.exists("logo.png"):
-    st.image("logo.png", use_column_width=True)
-elif os.path.exists("logo.jpg"):
-    st.image("logo.jpg", use_column_width=True)
+# Logga från repo
+logo_files = ["logo.png", "logo.jpg", "logo.jpeg"]
+logo_path = next((f for f in logo_files if os.path.exists(f)), None)
+if logo_path:
+    st.image(logo_path, use_column_width=True)
 else:
     st.markdown("<h1 style='text-align: center;'>📦 Ordna Reda</h1>", unsafe_allow_html=True)
 
@@ -106,7 +101,7 @@ if "box" in query_params:
         box = c.fetchone()
         if box:
             st.markdown(f"<h1 style='text-align: center;'>📦 {box[0]}</h1>", unsafe_allow_html=True)
-            st.markdown("<div class='no-print' style='text-align: center; margin-bottom: 30px;'>", unsafe_allow_html=True)
+            st.markdown("<div style='text-align: center; margin-bottom: 30px;'>", unsafe_allow_html=True)
             if st.button("🖨️ Skriv ut denna sida"):
                 st.markdown("<script>window.print();</script>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
@@ -124,7 +119,6 @@ if "box" in query_params:
     except:
         st.error("Ogiltig länk.")
 else:
-    # Normal app
     option = st.sidebar.selectbox("Välj funktion", ["Skapa låda", "Visa och redigera lådor", "Sök i innehåll"])
 
     if option == "Skapa låda":
@@ -178,8 +172,8 @@ else:
                         else:
                             img_path = None
                             if uploaded:
-                                img_path = f"images/{uploaded.name}"
                                 os.makedirs("images", exist_ok=True)
+                                img_path = f"images/{uploaded.name}"
                                 with open(img_path, "wb") as f:
                                     f.write(uploaded.getbuffer())
                             c.execute("INSERT INTO items (box_id, description, image_path) VALUES (?, ?, ?)",
@@ -189,11 +183,11 @@ else:
                             st.rerun()
 
                     st.subheader("Generera QR-kod")
-                    current_url = st.text_input("Appens URL (kopiera från webbläsaren)", value="", key=f"url_{box_id}")
-                    if not current_url:
-                        current_url = "https://din-app.streamlit.app"  # fallback
+                    base_url = st.text_input("Appens URL (kopiera från webbläsarens adressfält)", value="", key=f"url_{box_id}")
+                    if not base_url:
+                        base_url = "https://din-app.streamlit.app"  # fallback
                     if st.button("Skapa QR-kod", key=f"qr_{box_id}"):
-                        url = f"{current_url.rstrip('/')}/?box={box_id}"
+                        url = f"{base_url.rstrip('/')}/?box={box_id}"
                         qr = qrcode.QRCode(version=1, box_size=10, border=4)
                         qr.add_data(url)
                         qr.make(fit=True)
