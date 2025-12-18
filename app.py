@@ -62,7 +62,7 @@ html, body, [class*="css"] {
 
 .main > div {
     background-color: rgba(0, 0, 0, 0.64);
-    border-radius: 18px;
+    border-radius: 18px; }
     padding: 30px;
     margin: 20px;
 }
@@ -319,6 +319,7 @@ else:
                 st.info("Inget hittades.")
 
 conn.close()
+
 
 
 
