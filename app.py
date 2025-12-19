@@ -79,6 +79,10 @@ st.markdown(css, unsafe_allow_html=True)
 st.markdown("<h1 style='text-align: center; color: #2C3E50;'>Välkommen in i ditt förråd</h1>", unsafe_allow_html=True)
 st.markdown("---")
 
+# Håll koll på vilken låda som ska vara öppen efter rerun
+if 'open_box' not in st.session_state:
+    st.session_state.open_box = None
+
 # Sidebar – ren
 st.sidebar.markdown("---")
 
@@ -129,7 +133,11 @@ else:
             for box in boxes:
                 box_id, box_name = box
                 item_count = len(get_items(box_id))
-                with st.expander(f"{box_name} – {item_count} saker", expanded=False):
+                # Öppen om det är den vi precis jobbade med
+                expanded = (st.session_state.open_box == box_id)
+                with st.expander(f"{box_name} – {item_count} saker", expanded=expanded):
+                    st.session_state.open_box = box_id  # Håll den öppen
+
                     new_name = st.text_input("Nytt namn", value=box_name, key=f"name_edit_{box_id}")
                     if st.button("Uppdatera namn", key=f"update_name_{box_id}"):
                         c.execute("UPDATE boxes SET name=? WHERE id=?", (new_name, box_id))
@@ -194,6 +202,7 @@ else:
                         c.execute("DELETE FROM boxes WHERE id=?", (box_id,))
                         conn.commit()
                         st.success("Lådan borttagen!")
+                        st.session_state.open_box = None  # Stäng alla efter borttagning
                         st.rerun()
 
     elif option == "Sök i innehåll":
